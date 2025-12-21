@@ -7,7 +7,6 @@ import (
 )
 
 func main() {
-
 	input := getInput()
 	temp := strings.Split(input, "\n")
 
