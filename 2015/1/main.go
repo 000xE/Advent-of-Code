@@ -7,14 +7,20 @@ func main() {
 
 	floor := 0
 
-	for _, x := range input {
+	basement := 0
+
+	for i, x := range input {
 		switch x {
 		case '(':
 			floor += 1
 		case ')':
 			floor -= 1
 		}
+
+		if floor == -1 && basement == 0 {
+			basement = i + 1
+		}
 	}
 
-	fmt.Println(floor)
+	fmt.Println(floor, basement)
 }
