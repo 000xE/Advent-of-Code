@@ -7,6 +7,11 @@ import (
 )
 
 func main() {
+	part1()
+	part2()
+}
+
+func part1() {
 	input := getInput()
 	temp := strings.Split(input, ",")
 
@@ -38,6 +43,143 @@ func main() {
 
 			if valid {
 				invalid = append(invalid, i)
+			}
+		}
+	}
+
+	total := 0
+
+	for _, num := range invalid {
+		total += num
+	}
+
+	println(total)
+}
+
+func part2() {
+	input := getInput()
+	temp := strings.Split(input, ",")
+
+	invalid := make([]int, 0)
+
+	for _, x := range temp {
+		split := strings.Split(x, "-")
+		lower, _ := strconv.Atoi(split[0])
+		upper, _ := strconv.Atoi(split[1])
+
+		for i := lower; i <= upper; i++ {
+			str := fmt.Sprint(i)
+			length := len(str)
+
+			for subLen := 1; subLen < length; subLen++ {
+				if length%subLen == 0 {
+					div := length / subLen
+					if div < 2 { //must repeat substring twice or more
+						continue
+					}
+
+					subStr := str[:subLen]
+					repeated := strings.Repeat(subStr, div)
+
+					if repeated == str {
+						invalid = append(invalid, i)
+						break
+					}
+				}
+			}
+		}
+	}
+
+	total := 0
+	for _, num := range invalid {
+		total += num
+	}
+
+	println(total)
+}
+
+func part2_old() {
+	input := getInput()
+	temp := strings.Split(input, ",")
+
+	invalid := make([]int, 0)
+
+	for _, x := range temp {
+		split := strings.Split(x, "-")
+
+		lower, _ := strconv.Atoi(split[0])
+		upper, _ := strconv.Atoi(split[1])
+
+		for i := lower; i <= upper; i++ {
+			str := fmt.Sprint(i)
+			length := len(str)
+
+			valid := true
+
+			if length%2 == 0 {
+				half := length / 2
+
+				for j := range half {
+					if str[j] != str[j+half] {
+						valid = false
+						break
+					}
+				}
+
+				if valid {
+					invalid = append(invalid, i)
+				}
+			}
+
+			if !valid {
+				s := ""
+				strFound := false
+				for _, jc := range str {
+					if !strFound {
+						s += string(jc)
+						count := 0
+
+						for k := range s {
+							offset := len(s) + k
+							if offset >= len(str) {
+								break
+							}
+							kStr := string(s[k])
+							offsetStr := string(str[offset])
+							if kStr != offsetStr {
+								break
+							}
+
+							count += 1
+						}
+
+						if count == len(s) {
+							strFound = true
+						}
+					} else {
+						break
+					}
+				}
+
+				sLen := len(s)
+
+				invalidStr := false
+
+				counter := 0
+
+				for l := 0; l < length; l += sLen {
+					substr := str[l : l+sLen]
+					if substr != s {
+						invalidStr = true
+						break
+					} else {
+						counter++
+					}
+				}
+
+				if !invalidStr && counter > 1 {
+					invalid = append(invalid, i)
+				}
 			}
 		}
 	}
